@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TriZone Lite v3.0 - Full Stack Demo</title>
+    
+    <!-- TAILWIND CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- PHOSPHOR ICONS -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- FONTS -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- CONFIG -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        bg: { main: '#0B1120', card: '#1E293B' },
+                        cyber: '#818CF8',   // Indigo 400
+                        lounge: '#F472B6',  // Pink 400
+                        gold: '#FBBF24',    // Amber 400
+                        success: '#34D399', // Emerald 400
+                        danger: '#F87171',  // Red 400
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0B1120; color: #E2E8F0; }
+        
+        /* Glassmorphism */
+        .glass {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .active-nav { 
+            background: rgba(129, 140, 248, 0.15); 
+            color: #818CF8; 
+            border-right: 3px solid #818CF8; 
+        }
+        
+        /* Auto-fill fix */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
+            -webkit-text-fill-color: white !important;
+        }
+        
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col selection:bg-cyber selection:text-white">
+
+    <!-- ========================================== -->
+    <!-- 1. AUTHENTICATION MODULE (Login/Signup)    -->
+    <!-- ========================================== -->
+    <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#0B1120]">
+        <div class="glass p-8 rounded-3xl w-full max-w-sm relative overflow-hidden shadow-2xl border border-slate-700 transition-all duration-300" id="auth-card">
+            
+            <!-- Background Decoration -->
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyber/20 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-lounge/20 rounded-full blur-3xl"></div>
+
+            <!-- Header -->
+            <div class="text-center mb-6 relative z-10">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyber to-purple-600 shadow-lg shadow-indigo-500/20 mb-3">
+                    <i class="ph ph-hexagon text-3xl text-white"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-white tracking-tight">TriZone <span class="text-cyber">v3</span></h1>
+                <p class="text-slate-400 text-xs mt-1" id="auth-subtitle">Resource Management System</p>
+            </div>
+
+            <!-- VIEW: LOGIN FORM -->
+            <form id="form-login" onsubmit="Auth.handleLogin(event)" class="space-y-4 relative z-10 fade-in">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Username</label>
+                    <div class="relative">
+                        <i class="ph ph-user absolute left-3 top-3 text-slate-500"></i>
+                        <input type="text" id="login-user" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white focus:border-cyber focus:ring-1 focus:ring-cyber outline-none transition-all placeholder-slate-600" placeholder="Enter username" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Password</label>
+                    <div class="relative">
+                        <i class="ph ph-lock-key absolute left-3 top-3 text-slate-500"></i>
+                        <input type="password" id="login-pass" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white focus:border-cyber focus:ring-1 focus:ring-cyber outline-none transition-all placeholder-slate-600" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-cyber hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-cyber/20 transition-all text-sm mt-2">
+                    Sign In
+                </button>
+                
+                <div class="flex justify-between items-center pt-2 text-xs">
+                    <button type="button" onclick="Auth.toggleView('signup')" class="text-cyber hover:text-white transition-colors">Create Account</button>
+                    <button type="button" onclick="Auth.guestLogin()" class="text-slate-500 hover:text-white transition-colors">Guest Mode</button>
+                </div>
+
+                <!-- Demo Credentials -->
+                <div class="mt-4 pt-4 border-t border-slate-700/50">
+                    <p class="text-[10px] text-center text-slate-500 font-bold uppercase mb-2">Default Accounts</p>
+                    <div class="flex justify-between gap-2 text-[10px] font-mono">
+                        <div class="bg-slate-900/50 p-2 rounded w-full text-center border border-slate-800 text-slate-400">
+                            admin / admin123
+                        </div>
+                        <div class="bg-slate-900/50 p-2 rounded w-full text-center border border-slate-800 text-slate-400">
+                            customer / 1234
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- VIEW: SIGNUP FORM (Hidden by default) -->
+            <form id="form-signup" onsubmit="Auth.handleSignup(event)" class="space-y-4 relative z-10 hidden fade-in">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Display Name</label>
+                        <input type="text" id="reg-name" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-4 text-sm text-white focus:border-cyber focus:ring-1 focus:ring-cyber outline-none" placeholder="e.g. John" required>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Role</label>
+                        <select id="reg-role" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-2 text-sm text-white focus:border-cyber focus:ring-1 focus:ring-cyber outline-none">
+                            <option value="customer">Customer</option>
+                            <option value="admin">Admin (Demo)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Username</label>
+                    <div class="relative">
+                        <i class="ph ph-user-plus absolute left-3 top-3 text-slate-500"></i>
+                        <input type="text" id="reg-user" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white focus:border-cyber focus:ring-1 focus:ring-cyber outline-none" placeholder="Choose username" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Password</label>
+                    <div class="relative">
+                        <i class="ph ph-lock-key absolute left-3 top-3 text-slate-500"></i>
+                        <input type="password" id="reg-pass" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white focus:border-cyber focus:ring-1 focus:ring-cyber outline-none" placeholder="Choose password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-lounge hover:bg-pink-500 text-white font-bold rounded-xl shadow-lg shadow-lounge/20 transition-all text-sm mt-2">
+                    Register Account
+                </button>
+                
+                <div class="text-center pt-2 text-xs">
+                    <button type="button" onclick="Auth.toggleView('login')" class="text-slate-400 hover:text-white transition-colors">Already have an account? Sign In</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. MAIN APP LAYOUT                         -->
+    <!-- ========================================== -->
+    <div id="app-interface" class="hidden flex-1 flex h-full">
+        
+        <!-- SIDEBAR -->
+        <aside class="w-20 lg:w-64 bg-bg-card/50 border-r border-slate-800 flex flex-col justify-between transition-all duration-300">
+            <div>
+                <div class="h-20 flex items-center justify-center lg:justify-start lg:px-6 border-b border-slate-800">
+                    <i class="ph ph-hexagon text-3xl text-cyber animate-pulse"></i>
+                    <span class="hidden lg:block font-bold text-xl ml-3 tracking-wide text-white">TriZone</span>
+                </div>
+
+                <nav class="p-3 space-y-1 mt-4">
+                    <button onclick="Router.nav('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-4 p-3 rounded-lg text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i class="ph ph-squares-four text-xl"></i>
+                        <span class="hidden lg:block text-sm font-medium">Dashboard</span>
+                    </button>
+                    <button onclick="Router.nav('cyber')" id="nav-cyber" class="w-full flex items-center gap-4 p-3 rounded-lg text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i class="ph ph-desktop-tower text-xl"></i>
+                        <span class="hidden lg:block text-sm font-medium">Cyber Zone</span>
+                    </button>
+                    <button onclick="Router.nav('lounge')" id="nav-lounge" class="w-full flex items-center gap-4 p-3 rounded-lg text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i class="ph ph-armchair text-xl"></i>
+                        <span class="hidden lg:block text-sm font-medium">Lounge Area</span>
+                    </button>
+                    <button onclick="Router.nav('menu')" id="nav-menu" class="w-full flex items-center gap-4 p-3 rounded-lg text-slate-400 hover:bg-slate-800 transition-colors">
+                        <i class="ph ph-coffee text-xl"></i>
+                        <span class="hidden lg:block text-sm font-medium">Bistro Menu</span>
+                    </button>
+                    
+                    <!-- Admin Only Menu -->
+                    <div id="admin-menu" class="hidden pt-4 mt-4 border-t border-slate-800">
+                        <p class="hidden lg:block px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Management</p>
+                        <button onclick="Router.nav('bookings')" id="nav-bookings" class="w-full flex items-center gap-4 p-3 rounded-lg text-slate-400 hover:bg-slate-800 transition-colors">
+                            <i class="ph ph-list-dashes text-xl"></i>
+                            <span class="hidden lg:block text-sm font-medium">Bookings</span>
+                        </button>
+                        <button onclick="Router.nav('settings')" id="nav-settings" class="w-full flex items-center gap-4 p-3 rounded-lg text-slate-400 hover:bg-slate-800 transition-colors">
+                            <i class="ph ph-sliders text-xl"></i>
+                            <span class="hidden lg:block text-sm font-medium">Settings</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="p-4 border-t border-slate-800 bg-slate-900/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-r from-cyber to-blue-600 flex items-center justify-center text-white font-bold text-xs shadow-lg">
+                        <span id="user-initials">U</span>
+                    </div>
+                    <div class="hidden lg:block overflow-hidden">
+                        <p class="text-sm font-bold text-white truncate" id="user-name">User</p>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wider" id="user-role">Role</p>
+                    </div>
+                    <button onclick="location.reload()" class="ml-auto text-slate-500 hover:text-danger p-2"><i class="ph ph-sign-out text-lg"></i></button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENT -->
+        <main class="flex-1 overflow-y-auto bg-[#0B1120] relative">
+            
+            <div id="happy-hour-banner" class="hidden bg-gold text-slate-900 px-6 py-2 flex justify-between items-center font-bold text-sm shadow-lg shadow-gold/20 sticky top-0 z-40">
+                <div class="flex items-center gap-2">
+                    <i class="ph ph-sparkle-fill animate-pulse"></i>
+                    <span>HAPPY HOUR ACTIVE! 20% OFF ALL RATES</span>
+                </div>
+                <span class="bg-black/10 px-2 py-0.5 rounded text-xs">System Wide</span>
+            </div>
+
+            <header class="h-20 flex items-center justify-between px-8 border-b border-slate-800 bg-[#0B1120]/80 backdrop-blur z-30 sticky top-0" style="top: 0px;">
+                <div>
+                    <h2 class="text-2xl font-bold text-white tracking-tight" id="page-title">Dashboard</h2>
+                    <p class="text-xs text-slate-400 font-mono" id="current-time">SYSTEM TIME: 00:00:00</p>
+                </div>
+                <div class="flex gap-2 text-xs font-medium">
+                    <span class="px-3 py-1.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-success"></span> Available
+                    </span>
+                    <span class="px-3 py-1.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-danger"></span> Occupied
+                    </span>
+                </div>
+            </header>
+
+            <div class="p-6 lg:p-10 max-w-7xl mx-auto pb-32 space-y-8">
+                
+                <!-- VIEW 1: DASHBOARD -->
+                <section id="view-dashboard" class="page-view fade-in space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="glass p-6 rounded-2xl border-t-4 border-cyber">
+                            <h3 class="text-slate-400 text-xs font-bold uppercase tracking-widest">Cyber Stations</h3>
+                            <div class="mt-4 flex justify-between items-end">
+                                <div><span class="text-4xl font-bold text-white" id="stat-pc-avail">0</span><span class="text-slate-500 text-sm">/ <span id="stat-pc-total">0</span></span></div>
+                                <div class="w-10 h-10 rounded-lg bg-cyber/10 flex items-center justify-center text-cyber"><i class="ph ph-desktop-tower text-xl"></i></div>
+                            </div>
+                        </div>
+                        <div class="glass p-6 rounded-2xl border-t-4 border-lounge">
+                            <h3 class="text-slate-400 text-xs font-bold uppercase tracking-widest">Lounge Rooms</h3>
+                            <div class="mt-4 flex justify-between items-end">
+                                <div><span class="text-4xl font-bold text-white" id="stat-lounge-avail">0</span><span class="text-slate-500 text-sm">/ <span id="stat-lounge-total">0</span></span></div>
+                                <div class="w-10 h-10 rounded-lg bg-lounge/10 flex items-center justify-center text-lounge"><i class="ph ph-armchair text-xl"></i></div>
+                            </div>
+                        </div>
+                        <div class="glass p-6 rounded-2xl border-t-4 border-gold">
+                            <h3 class="text-slate-400 text-xs font-bold uppercase tracking-widest">Session Revenue</h3>
+                                <div class="mt-4 flex justify-between items-end">
+                                <div><span class="text-4xl font-bold text-white tracking-tight" id="stat-revenue">₱0.00</span></div>
+                                <div class="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center text-gold"><i class="ph ph-currency-dollar text-xl"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-2xl overflow-hidden">
+                        <div class="px-6 py-4 border-b border-slate-700 bg-slate-800/30 flex justify-between items-center">
+                            <h3 class="text-white font-bold text-sm">Recent Activity</h3>
+                            <span class="text-xs text-slate-500 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span> LIVE</span>
+                        </div>
+                        <table class="w-full text-left text-sm text-slate-400">
+                            <thead class="text-xs uppercase bg-slate-900/50 text-slate-500">
+                                <tr><th class="px-6 py-3">User</th><th class="px-6 py-3">Action</th><th class="px-6 py-3">Amount</th><th class="px-6 py-3">Time</th></tr>
+                            </thead>
+                            <tbody id="table-recent" class="divide-y divide-slate-800 font-mono text-xs"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- VIEW 2: CYBER ZONE -->
+                <section id="view-cyber" class="page-view hidden fade-in">
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="grid-cyber"></div>
+                </section>
+
+                <!-- VIEW 3: LOUNGE -->
+                <section id="view-lounge" class="page-view hidden fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-lounge"></div>
+                </section>
+
+                <!-- VIEW 4: MENU -->
+                <section id="view-menu" class="page-view hidden fade-in flex flex-col lg:flex-row gap-8">
+                    <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 h-min" id="grid-menu"></div>
+                    <div id="cart-panel" class="w-full lg:w-80">
+                        <div class="glass p-6 rounded-2xl sticky top-24 border border-slate-700">
+                            <h3 class="text-white font-bold mb-4 flex items-center gap-2 text-sm uppercase tracking-wider"><i class="ph ph-receipt"></i> Your Order</h3>
+                            <div id="cart-items" class="space-y-3 mb-6 min-h-[100px] text-sm"><p class="text-slate-600 text-center py-8 italic">Your cart is empty</p></div>
+                            <div class="pt-4 border-t border-slate-700">
+                                <div class="flex justify-between text-slate-400 text-xs mb-1"><span>Subtotal</span><span id="cart-subtotal">₱0.00</span></div>
+                                <div class="flex justify-between text-gold text-xs mb-2 hidden" id="cart-discount-row"><span>Happy Hour (-20%)</span><span id="cart-discount">-₱0.00</span></div>
+                                <div class="flex justify-between text-white font-bold text-lg"><span>Total</span><span id="cart-total">₱0.00</span></div>
+                            </div>
+                            <button onclick="Bistro.checkout()" class="w-full mt-4 py-3 bg-cyber hover:bg-indigo-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-cyber/20">Confirm Order</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 5: BOOKINGS (ADMIN) -->
+                <section id="view-bookings" class="page-view hidden fade-in">
+                    <div class="glass rounded-2xl overflow-hidden border border-slate-700">
+                        <div class="px-6 py-4 bg-slate-800/30 border-b border-slate-700 flex justify-between items-center">
+                            <h3 class="text-white font-bold">Reservation Database</h3>
+                            <button onclick="Admin.resetDB()" class="text-xs text-danger hover:text-white transition-colors">Wipe Database</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-slate-400">
+                                <thead class="bg-slate-900/50 text-xs uppercase text-slate-500">
+                                    <tr><th class="px-6 py-3">ID</th><th class="px-6 py-3">Customer</th><th class="px-6 py-3">Item</th><th class="px-6 py-3">Duration</th><th class="px-6 py-3 text-right">Paid</th><th class="px-6 py-3 text-right">Action</th></tr>
+                                </thead>
+                                <tbody id="table-bookings" class="divide-y divide-slate-800 font-mono text-xs"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 6: SETTINGS (ADMIN) -->
+                <section id="view-settings" class="page-view hidden fade-in max-w-2xl">
+                    <h2 class="text-xl font-bold text-white mb-6">System Configuration</h2>
+                    <div class="glass p-6 rounded-2xl border border-slate-700 space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div><h3 class="text-white font-bold">Happy Hour Mode</h3><p class="text-slate-400 text-xs">Applies 20% discount to all rates instantly.</p></div>
+                            <button onclick="Admin.toggleHappyHour()" id="btn-happy-hour" class="px-4 py-2 rounded-lg bg-slate-700 text-slate-400 text-sm font-bold transition-all">Disabled</button>
+                        </div>
+                        <div class="h-px bg-slate-700"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- BOOKING MODAL -->
+    <div id="modal-booking" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-bg-card border border-slate-700 w-full max-w-sm rounded-2xl shadow-2xl p-6 relative">
+            <button onclick="Booking.close()" class="absolute top-4 right-4 text-slate-500 hover:text-white"><i class="ph ph-x text-lg"></i></button>
+            <div class="mb-6 text-center">
+                <div class="w-12 h-12 bg-cyber/10 text-cyber rounded-full flex items-center justify-center mx-auto mb-3 text-2xl"><i class="ph ph-receipt"></i></div>
+                <h3 class="text-lg font-bold text-white">Confirm Booking</h3>
+                <p class="text-slate-400 text-sm" id="modal-subtitle">Station Name</p>
+            </div>
+            <form onsubmit="Booking.submit(event)">
+                <input type="hidden" id="bk-id"><input type="hidden" id="bk-type">
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Select Duration</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <label class="cursor-pointer"><input type="radio" name="duration" value="1" class="peer sr-only" checked onchange="Booking.calcPrice()"><div class="py-2 rounded-lg border border-slate-700 text-center text-sm text-slate-400 peer-checked:bg-cyber peer-checked:text-white peer-checked:border-cyber transition-all">1 Hr</div></label>
+                        <label class="cursor-pointer"><input type="radio" name="duration" value="2" class="peer sr-only" onchange="Booking.calcPrice()"><div class="py-2 rounded-lg border border-slate-700 text-center text-sm text-slate-400 peer-checked:bg-cyber peer-checked:text-white peer-checked:border-cyber transition-all">2 Hrs</div></label>
+                        <label class="cursor-pointer"><input type="radio" name="duration" value="3" class="peer sr-only" onchange="Booking.calcPrice()"><div class="py-2 rounded-lg border border-slate-700 text-center text-sm text-slate-400 peer-checked:bg-cyber peer-checked:text-white peer-checked:border-cyber transition-all">3 Hrs</div></label>
+                    </div>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-xl mb-6">
+                    <div class="flex justify-between text-sm text-slate-400 mb-1"><span>Rate</span><span id="bk-rate">₱25.00/hr</span></div>
+                    <div class="flex justify-between text-sm text-gold mb-1 hidden" id="bk-discount-row"><span>Happy Hour</span><span>-20%</span></div>
+                    <div class="border-t border-slate-800 my-2"></div>
+                    <div class="flex justify-between font-bold text-white"><span>Total Due</span><span id="bk-total" class="text-xl">₱25.00</span></div>
+                </div>
+                <button type="submit" class="w-full py-3 bg-cyber hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-cyber/20 transition-all">Pay & Reserve</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- CUSTOMER ORDER MODAL -->
+    <div id="modal-order" class="fixed inset-0 z-[110] bg-slate-900/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-bg-card border border-slate-700 w-full max-w-sm rounded-2xl shadow-2xl p-6 relative">
+            <button onclick="Bistro.closeOrderModal()" class="absolute top-4 right-4 text-slate-500 hover:text-white"><i class="ph ph-x text-lg"></i></button>
+            <div class="mb-4 text-center">
+                <h3 class="text-lg font-bold text-white">Confirm Order</h3>
+                <p class="text-slate-400 text-sm">Choose delivery or pickup before confirming</p>
+            </div>
+            <form id="form-order" onsubmit="Bistro.submitOrder(event)">
+                <div class="mb-4">
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Delivery Option</label>
+                    <select id="order-delivery-type" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white">
+                        <option value="pickup">Pickup at Food Lounge</option>
+                        <option value="delivery">Deliver to Station / Lounge</option>
+                    </select>
+                </div>
+                <div class="mb-4" id="order-location-row" style="display:none;">
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Delivery Location (station id or lounge)</label>
+                    <input id="order-delivery-location" type="text" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white" placeholder="e.g. pc_1 or Lounge A">
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="flex-1 py-3 bg-cyber hover:bg-indigo-500 text-white font-bold rounded-xl">Confirm & Send</button>
+                    <button type="button" onclick="Bistro.closeOrderModal()" class="flex-1 py-3 bg-slate-700 text-slate-300 rounded-xl">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN BOOKING DETAILS MODAL -->
+    <div id="modal-admin-booking" class="fixed inset-0 z-[120] bg-slate-900/90 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="bg-bg-card border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl p-6 relative">
+            <button onclick="Admin.closeBookingModal()" class="absolute top-4 right-4 text-slate-500 hover:text-white"><i class="ph ph-x text-lg"></i></button>
+            <h3 class="text-lg font-bold text-white mb-4">Booking Details</h3>
+            <div id="admin-booking-content" class="text-sm text-slate-300 space-y-2 overflow-y-auto max-h-96"></div>
+        </div>
+    </div>
+
+    <!-- ADMIN MENU MANAGEMENT MODAL -->
+    <div id="modal-admin-menu" class="fixed inset-0 z-[120] bg-slate-900/90 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="bg-bg-card border border-slate-700 w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
+            <button onclick="Admin.closeMenuModal()" class="absolute top-4 right-4 text-slate-500 hover:text-white"><i class="ph ph-x text-lg"></i></button>
+            <h3 class="text-lg font-bold text-white mb-4">Manage Bistro Item</h3>
+            <form id="admin-menu-form" onsubmit="Admin.saveMenuItem(event)">
+                <input type="hidden" id="menu-item-id">
+                <div class="mb-3"><label class="text-xs text-slate-400">Name</label><input id="menu-item-name" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white" required></div>
+                <div class="mb-3"><label class="text-xs text-slate-400">Price (₱)</label><input id="menu-item-price" type="number" step="0.01" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white" required></div>
+                <div class="mb-4"><label class="text-xs text-slate-400">Icon</label><input id="menu-item-icon" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white" placeholder="ph-hamburger"></div>
+                <div class="flex gap-2"><button class="flex-1 py-2 bg-gold text-slate-900 rounded font-bold">Save</button><button type="button" onclick="Admin.closeMenuModal()" class="flex-1 py-2 bg-slate-700 text-slate-300 rounded">Cancel</button></div>
+            </form>
+        </div>
+    </div>
+
+        <!-- DELETE CONFIRMATION MODAL -->
+        <div id="modal-confirm-delete" class="fixed inset-0 z-[130] bg-slate-900/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+            <div class="bg-bg-card border border-slate-700 w-full max-w-sm rounded-2xl shadow-2xl p-6 relative">
+                <button onclick="Admin.cancelDelete()" class="absolute top-4 right-4 text-slate-500 hover:text-white"><i class="ph ph-x text-lg"></i></button>
+                <div class="mb-4 text-center">
+                    <h3 class="text-lg font-bold text-white">Confirm Delete</h3>
+                    <p class="text-slate-400 text-sm">Are you sure you want to remove <span id="confirm-delete-name" class="font-bold"></span>?</p>
+                </div>
+                <input type="hidden" id="confirm-delete-id">
+                <div class="flex gap-2">
+                    <button onclick="Admin.confirmRemoveMenuItem()" class="flex-1 py-3 bg-danger hover:bg-red-500 text-white font-bold rounded-xl">Delete</button>
+                    <button type="button" onclick="Admin.cancelDelete()" class="flex-1 py-3 bg-slate-700 text-slate-300 rounded-xl">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+    <!-- ========================================== -->
+    <!-- 3. JAVASCRIPT LOGIC (DB & AUTH)            -->
+    <!-- ========================================== -->
+    <script>
+        // --- 1. MOCK DATABASE (LocalStorage) ---
+        const DB = {
+            init() {
+                // Initialize Resources & Settings
+                if(!localStorage.getItem('tz2_config')) {
+                    localStorage.setItem('tz2_config', JSON.stringify({ happyHour: false }));
+                    const resources = [];
+                    for(let i=1; i<=10; i++) resources.push({ _id: `pc_${i}`, name: `Station ${i}`, type: 'cyber', status: 'available' });
+                    for(let i=1; i<=4; i++) resources.push({ _id: `rm_${i}`, name: `Lounge ${String.fromCharCode(64+i)}`, type: 'lounge', status: 'available' });
+                    localStorage.setItem('tz2_resources', JSON.stringify(resources));
+                    localStorage.setItem('tz2_bookings', '[]');
+                }
+                
+                // Initialize Users (Seed Default Admin/Customer)
+                if(!localStorage.getItem('tz2_users')) {
+                    const defaultUsers = [
+                        { id: 'u_admin', name: 'Owner', user: 'admin', pass: 'admin123', role: 'admin', initial: 'O' },
+                        { id: 'u_cust', name: 'Customer', user: 'customer', pass: '1234', role: 'customer', initial: 'C' }
+                    ];
+                    localStorage.setItem('tz2_users', JSON.stringify(defaultUsers));
+                }
+            },
+            get(coll) { return JSON.parse(localStorage.getItem(`tz2_${coll}`)); },
+            set(coll, data) { localStorage.setItem(`tz2_${coll}`, JSON.stringify(data)); },
+            getConfig() { return JSON.parse(localStorage.getItem('tz2_config')); },
+            setConfig(data) { localStorage.setItem('tz2_config', JSON.stringify(data)); }
+        };
+
+        // --- 2. AUTHENTICATION MODULE ---
+        const State = { user: null, cart: [], config: { happyHour: false } };
+
+        const Auth = {
+            toggleView(view) {
+                const loginForm = document.getElementById('form-login');
+                const signupForm = document.getElementById('form-signup');
+                const subtitle = document.getElementById('auth-subtitle');
+                
+                if(view === 'signup') {
+                    loginForm.classList.add('hidden');
+                    signupForm.classList.remove('hidden');
+                    subtitle.innerText = "Create New Account";
+                } else {
+                    signupForm.classList.add('hidden');
+                    loginForm.classList.remove('hidden');
+                    subtitle.innerText = "Resource Management System";
+                }
+            },
+
+            handleLogin(e) {
+                e.preventDefault();
+                const userIn = document.getElementById('login-user').value.toLowerCase().trim();
+                const passIn = document.getElementById('login-pass').value.trim();
+
+                const users = DB.get('users');
+                const found = users.find(u => u.user === userIn && u.pass === passIn);
+
+                if(found) {
+                    this.startSession(found);
+                } else {
+                    alert('Invalid Username or Password');
+                    document.getElementById('auth-card').classList.add('animate-pulse');
+                    setTimeout(() => document.getElementById('auth-card').classList.remove('animate-pulse'), 500);
+                }
+            },
+
+            handleSignup(e) {
+                e.preventDefault();
+                const name = document.getElementById('reg-name').value;
+                const role = document.getElementById('reg-role').value;
+                const user = document.getElementById('reg-user').value.toLowerCase().trim();
+                const pass = document.getElementById('reg-pass').value.trim();
+
+                const users = DB.get('users');
+                if(users.find(u => u.user === user)) {
+                    alert('Username already taken!');
+                    return;
+                }
+
+                const newUser = {
+                    id: 'u_' + Date.now(),
+                    name: name,
+                    user: user,
+                    pass: pass,
+                    role: role,
+                    initial: name.charAt(0).toUpperCase()
+                };
+
+                users.push(newUser);
+                DB.set('users', users);
+                
+                alert('Account Created! Signing you in...');
+                this.startSession(newUser);
+            },
+
+            guestLogin() {
+                this.startSession({ name: 'Visitor', role: 'guest', initial: 'V' });
+            },
+
+            startSession(userData) {
+                State.user = userData;
+                State.config = DB.getConfig();
+
+                // UI Transition
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('app-interface').classList.remove('hidden');
+
+                // Profile Set
+                document.getElementById('user-name').innerText = userData.name;
+                document.getElementById('user-role').innerText = userData.role.toUpperCase();
+                document.getElementById('user-initials').innerText = userData.initial;
+
+                // RBAC
+                const adminEls = document.querySelectorAll('#admin-menu');
+                adminEls.forEach(el => el.classList.toggle('hidden', userData.role !== 'admin'));
+                const cartEl = document.getElementById('cart-panel');
+                cartEl.classList.toggle('hidden', userData.role === 'guest');
+
+                Router.nav('dashboard');
+                Clock.start();
+                    // fetch latest menu/resources/bookings from backend if reachable
+                    AppSync.fetchInitial();
+            }
+        };
+
+        // --- 3. SYSTEM LOGIC ---
+        const Router = {
+            nav(view) {
+                document.querySelectorAll('.page-view').forEach(el => el.classList.add('hidden'));
+                document.getElementById(`view-${view}`).classList.remove('hidden');
+                
+                document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-nav', 'bg-slate-800', 'text-white'));
+                const btn = document.getElementById(`nav-${view}`);
+                if(btn) btn.classList.add('active-nav');
+
+                const titles = { 'dashboard': 'System Dashboard', 'cyber': 'Cyber Zone', 'lounge': 'Lounge Area', 'menu': 'Bistro Menu', 'bookings': 'Booking History', 'settings': 'Admin Settings' };
+                document.getElementById('page-title').innerText = titles[view];
+                Render.refresh();
+            }
+        };
+
+        const Pricing = {
+            // Pricing is in Philippine Peso (₱). Cyber stations avg ₱25/hr.
+            getRates(type) {
+                const base = type === 'cyber' ? 25.00 : 150.00;
+                const isHH = State.config.happyHour;
+                return { base: base, final: isHH ? base * 0.8 : base, isDiscounted: isHH };
+            }
+        };
+
+        // --- 0.5 App Sync utilities (fetch backend when available) ---
+        const AppSync = {
+            async fetchInitial(){
+                // fetch menu, resources, bookings if backend reachable
+                try {
+                    const [menuRes, resRes, bkRes] = await Promise.all([
+                        fetch('/api/menu'), fetch('/api/resources'), fetch('/api/bookings', { headers: { 'x-user-role': 'admin' } })
+                    ]);
+                    if(menuRes.ok){
+                        const menu = await menuRes.json(); Bistro.items = menu.map(m => ({ id: m._id, name: m.name, price: m.price, icon: m.icon || 'ph-coffee' }));
+                    }
+                    if(resRes.ok){
+                        const resources = await resRes.json(); DB.set('resources', resources);
+                    }
+                    if(bkRes.ok){
+                        const bookings = await bkRes.json(); DB.set('bookings', bookings);
+                    }
+                    Render.refresh();
+                } catch (err) {
+                    // backend not reachable — keep local data
+                }
+            }
+        };
+
+        const Booking = {
+            currentRes: null,
+            open(id, name, type) {
+                if(State.user.role === 'guest') return alert("Login as Customer to book.");
+                this.currentRes = { id, name, type };
+                document.getElementById('modal-booking').classList.remove('hidden');
+                document.getElementById('modal-subtitle').innerText = name;
+                document.getElementById('bk-id').value = id;
+                document.getElementById('bk-type').value = type;
+                document.querySelector('input[name="duration"][value="1"]').checked = true;
+                this.calcPrice();
+            },
+            close() { document.getElementById('modal-booking').classList.add('hidden'); },
+            calcPrice() {
+                const dur = parseInt(document.querySelector('input[name="duration"]:checked').value);
+                const rates = Pricing.getRates(this.currentRes.type);
+                const total = rates.final * dur;
+                document.getElementById('bk-rate').innerText = `₱${rates.base.toFixed(2)}/hr`;
+                document.getElementById('bk-total').innerText = `₱${total.toFixed(2)}`;
+                document.getElementById('bk-discount-row').classList.toggle('hidden', !rates.isDiscounted);
+            },
+            submit(e) {
+                e.preventDefault();
+                const dur = parseInt(document.querySelector('input[name="duration"]:checked').value);
+                const rates = Pricing.getRates(this.currentRes.type);
+                const total = rates.final * dur;
+                
+                const booking = {
+                    _id: Math.random().toString(36).substr(2, 6),
+                    user: State.user.name,
+                    resourceId: this.currentRes.id,
+                    resourceName: this.currentRes.name,
+                    duration: dur,
+                    total: total,
+                    timestamp: new Date().toISOString()
+                };
+
+                // Try to submit booking to backend; fallback to local DB if offline
+                (async () => {
+                    try {
+                        const res = await fetch('/api/bookings', {
+                            method: 'POST', headers: { 'Content-Type': 'application/json', 'x-user-role': State.user.role },
+                            body: JSON.stringify({ resourceId: this.currentRes.id, user: State.user.name, duration: dur, rate: Pricing.getRates(this.currentRes.type).final })
+                        });
+                        if(!res.ok) throw new Error('Server error');
+                        const saved = await res.json();
+                        // update local cache as well
+                        const bookings = DB.get('bookings'); bookings.push(saved); DB.set('bookings', bookings);
+                        // update resources to occupied
+                        const resources = DB.get('resources'); const idx = resources.findIndex(r => r._id === this.currentRes.id);
+                        if(idx > -1) resources[idx].status = 'occupied'; DB.set('resources', resources);
+                    } catch (err) {
+                        const bookings = DB.get('bookings'); bookings.push(booking); DB.set('bookings', bookings);
+                        const resources = DB.get('resources');
+                        const idx = resources.findIndex(r => r._id === this.currentRes.id);
+                        if(idx > -1) resources[idx].status = 'occupied';
+                        DB.set('resources', resources);
+                    }
+                    this.close(); Render.refresh(); alert(`Paid ₱${total.toFixed(2)}`);
+                })();
+            }
+        };
+
+        const Bistro = {
+            // Prices are in PHP
+            items: [ {id:1, name:'Neon Burger', price:120.00, icon:'ph-hamburger'}, {id:2, name:'Cyber Soda', price:45.00, icon:'ph-coffee'}, {id:3, name:'Power Fries', price:80.00, icon:'ph-pizza'}, {id:4, name:'Energy Shot', price:60.00, icon:'ph-lightning'} ],
+            add(id) { if(State.user.role === 'guest') return; State.cart.push(this.items.find(i => i.id === id)); Render.cart(); },
+            remove(idx) { State.cart.splice(idx, 1); Render.cart(); },
+            checkout() {
+                if(!State.cart.length) return;
+                // open order modal to collect delivery/pickup
+                Bistro.openOrderModal();
+            },
+            openOrderModal(){
+                if(State.user.role === 'guest') return alert('Please login to place orders.');
+                document.getElementById('modal-order').classList.remove('hidden');
+                document.getElementById('order-delivery-type').value = 'pickup';
+                document.getElementById('order-location-row').style.display = 'none';
+                document.getElementById('order-delivery-location').value = '';
+            },
+            closeOrderModal(){ document.getElementById('modal-order').classList.add('hidden'); },
+            async submitOrder(e){
+                e.preventDefault();
+                const deliveryType = document.getElementById('order-delivery-type').value;
+                const deliveryLocation = document.getElementById('order-delivery-location').value || '';
+                let sub = State.cart.reduce((a,b) => a+b.price,0);
+                let disc = State.config.happyHour ? sub*0.2 : 0;
+                const total = sub - disc;
+
+                // Try to send order to backend, fallback to local DB
+                try {
+                    const res = await fetch('/api/orders', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json', 'x-user-role': State.user.role },
+                        body: JSON.stringify({ user: State.user.name, items: State.cart.map(i=>({ name: i.name, price: i.price, qty: 1 })), total: total, deliveryType, deliveryLocation })
+                    });
+                    if(!res.ok) throw new Error('Server error');
+                    const saved = await res.json();
+                    const bookings = DB.get('bookings'); bookings.push(saved); DB.set('bookings', bookings);
+                } catch (err) {
+                    const booking = { _id: Math.random().toString(36).substr(2,6), user: State.user.name, resourceId: 'bistro', resourceName: `Order (${State.cart.length})`, duration: 0, total: total, timestamp: new Date().toISOString(), deliveryType, deliveryLocation };
+                    const bookings = DB.get('bookings'); bookings.push(booking); DB.set('bookings', bookings);
+                }
+                State.cart = []; Render.cart(); Render.refresh(); Bistro.closeOrderModal(); alert('Order Sent!');
+            }
+        };
+
+        const Admin = {
+            toggleHappyHour() { State.config.happyHour = !State.config.happyHour; DB.setConfig(State.config); Render.refresh(); },
+            resetDB() { if(confirm("Wipe all data?")) { localStorage.clear(); location.reload(); } },
+            // Booking modal for admin to view booking details
+            openBookingModal(){
+                const bks = DB.get('bookings') || [];
+                const content = document.getElementById('admin-booking-content');
+                content.innerHTML = bks.slice().reverse().map(b => {
+                    return `<div class="p-3 border-b border-slate-800"><div class="flex justify-between"><div><div class="font-bold text-white">${b.user}</div><div class="text-slate-400 text-xs">${b.resourceName} — ${b.duration || 0}h</div></div><div class="text-right"><div class="font-mono text-success">₱${(b.total||0).toFixed(2)}</div><div class="text-slate-500 text-xs">${new Date(b.timestamp).toLocaleString()}</div></div></div><div class="text-slate-300 text-xs mt-2">Delivery: ${b.deliveryType || 'n/a'} ${b.deliveryLocation ? ' — ' + b.deliveryLocation : ''}</div></div>`;
+                }).join('');
+                document.getElementById('modal-admin-booking').classList.remove('hidden');
+            },
+            closeBookingModal(){ document.getElementById('modal-admin-booking').classList.add('hidden'); },
+
+            // Menu management
+            openMenuModal(item){
+                document.getElementById('modal-admin-menu').classList.remove('hidden');
+                if(item){ document.getElementById('menu-item-id').value = item.id || ''; document.getElementById('menu-item-name').value = item.name; document.getElementById('menu-item-price').value = item.price; document.getElementById('menu-item-icon').value = item.icon || ''; }
+                else { document.getElementById('menu-item-id').value = ''; document.getElementById('menu-item-name').value=''; document.getElementById('menu-item-price').value=''; document.getElementById('menu-item-icon').value=''; }
+            },
+            closeMenuModal(){ document.getElementById('modal-admin-menu').classList.add('hidden'); },
+            async saveMenuItem(e){
+                e.preventDefault();
+                const id = document.getElementById('menu-item-id').value;
+                const name = document.getElementById('menu-item-name').value;
+                const price = parseFloat(document.getElementById('menu-item-price').value);
+                const icon = document.getElementById('menu-item-icon').value || 'ph-coffee';
+                try {
+                    if(id){
+                        // Update existing item using PUT
+                        const res = await fetch(`/api/menu/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'x-user-role': 'admin' }, body: JSON.stringify({ name, price, icon }) });
+                        if(!res.ok) throw new Error('Update failed');
+                    } else {
+                        // Create new
+                        const res = await fetch('/api/menu', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-user-role': 'admin' }, body: JSON.stringify({ name, price, icon }) });
+                        if(!res.ok) throw new Error('Create failed');
+                    }
+                    await AppSync.fetchInitial();
+                } catch (err) { console.warn(err); alert('Save failed'); }
+                Admin.closeMenuModal();
+            },
+            // Prompted delete flow: open modal first, confirm then call DELETE
+            promptRemoveMenuItem(id){
+                const item = Bistro.items.find(it => String(it.id) === String(id));
+                const name = item ? item.name : id;
+                document.getElementById('confirm-delete-id').value = id;
+                document.getElementById('confirm-delete-name').innerText = name;
+                document.getElementById('modal-confirm-delete').classList.remove('hidden');
+            },
+            async confirmRemoveMenuItem(){
+                const id = document.getElementById('confirm-delete-id').value;
+                try {
+                    await fetch(`/api/menu/${id}`, { method: 'DELETE', headers: { 'x-user-role': 'admin' } });
+                    await AppSync.fetchInitial();
+                } catch(e){ console.warn('Delete failed', e); }
+                document.getElementById('modal-confirm-delete').classList.add('hidden');
+            },
+            cancelDelete(){ document.getElementById('modal-confirm-delete').classList.add('hidden'); }
+        };
+
+        const Render = {
+            refresh() {
+                const res = DB.get('resources'); const bks = DB.get('bookings');
+                const isHH = State.config.happyHour;
+                
+                document.getElementById('happy-hour-banner').classList.toggle('hidden', !isHH);
+                const hhBtn = document.getElementById('btn-happy-hour');
+                if(hhBtn) { hhBtn.innerText = isHH ? "ENABLED" : "DISABLED"; hhBtn.className = isHH ? "px-4 py-2 rounded-lg bg-gold text-slate-900 font-bold" : "px-4 py-2 rounded-lg bg-slate-700 text-slate-400 font-bold"; }
+
+                this.dashboard(res, bks);
+                this.grid(res, 'cyber', 'grid-cyber');
+                this.grid(res, 'lounge', 'grid-lounge');
+                this.menu();
+                this.history(bks);
+            },
+            dashboard(res, bks) {
+                // If admin, show full stats; if customer, show only their recent activities and available counts
+                if(State.user && State.user.role === 'admin'){
+                    document.getElementById('stat-pc-avail').innerText = res.filter(r => r.type === 'cyber' && r.status === 'available').length;
+                    document.getElementById('stat-pc-total').innerText = res.filter(r => r.type === 'cyber').length;
+                    document.getElementById('stat-lounge-avail').innerText = res.filter(r => r.type === 'lounge' && r.status === 'available').length;
+                    document.getElementById('stat-lounge-total').innerText = res.filter(r => r.type === 'lounge').length;
+                    document.getElementById('stat-revenue').innerText = `₱${bks.reduce((a,b) => a+b.total, 0).toFixed(2)}`;
+                    document.getElementById('table-recent').innerHTML = bks.slice(-5).reverse().map(b => `<tr><td class="px-6 py-3 font-medium text-white">${b.user}</td><td class="px-6 py-3 text-slate-400">${b.resourceName}</td><td class="px-6 py-3 text-success font-bold">₱${b.total.toFixed(2)}</td><td class="px-6 py-3 text-slate-500">${new Date(b.timestamp).toLocaleTimeString()}</td></tr>`).join('');
+                } else {
+                    // customer or guest: limit dashboard to their activity only
+                    const userName = State.user ? State.user.name : null;
+                    const myBookings = userName ? bks.filter(b => (b.user || '').toLowerCase() === (userName || '').toLowerCase()) : [];
+                    document.getElementById('stat-pc-avail').innerText = res.filter(r => r.type === 'cyber' && r.status === 'available').length;
+                    document.getElementById('stat-pc-total').innerText = res.filter(r => r.type === 'cyber').length;
+                    document.getElementById('stat-lounge-avail').innerText = res.filter(r => r.type === 'lounge' && r.status === 'available').length;
+                    document.getElementById('stat-lounge-total').innerText = res.filter(r => r.type === 'lounge').length;
+                    document.getElementById('stat-revenue').innerText = `₱${myBookings.reduce((a,b) => a+(b.total||0), 0).toFixed(2)}`;
+                    document.getElementById('table-recent').innerHTML = myBookings.slice(-5).reverse().map(b => `<tr><td class="px-6 py-3 font-medium text-white">${b.user}</td><td class="px-6 py-3 text-slate-400">${b.resourceName}</td><td class="px-6 py-3 text-success font-bold">₱${(b.total||0).toFixed(2)}</td><td class="px-6 py-3 text-slate-500">${new Date(b.timestamp).toLocaleTimeString()}</td></tr>`).join('');
+                }
+            },
+            grid(res, type, elId) {
+                document.getElementById(elId).innerHTML = res.filter(r => r.type === type).map(i => {
+                    let st = 'bg-success shadow-success/50', op = '', btn = '';
+                    if(i.status === 'occupied') { st = 'bg-danger shadow-danger/50'; op = 'opacity-50'; }
+                    if(i.status === 'maintenance') { st = 'bg-slate-500'; op = 'opacity-25'; }
+                    
+                    if(State.user.role === 'customer' && i.status === 'available') btn = `<button onclick="Booking.open('${i._id}','${i.name}','${type}')" class="absolute inset-0 bg-cyber/90 backdrop-blur opacity-0 group-hover:opacity-100 transition-opacity font-bold text-white tracking-widest">BOOK NOW</button>`;
+                    else if(State.user.role === 'admin') btn = `<button onclick="Admin.toggleStatus('${i._id}')" class="absolute inset-0 bg-slate-900/90 backdrop-blur opacity-0 group-hover:opacity-100 transition-opacity text-xs border border-slate-600">TOGGLE STATUS</button>`;
+                    
+                    return `<div class="relative group bg-bg-card border border-slate-700 p-4 rounded-xl flex flex-col items-center justify-center h-32 overflow-hidden hover:border-cyber transition-colors"><div class="absolute top-3 right-3 w-2 h-2 rounded-full ${st} shadow-[0_0_10px_currentColor]"></div><i class="ph ${type==='cyber'?'ph-desktop-tower':'ph-armchair'} text-3xl text-slate-500 mb-2 ${op}"></i><span class="font-bold text-sm text-slate-300">${i.name}</span>${btn}</div>`;
+                }).join('');
+            },
+            menu() {
+                document.getElementById('grid-menu').innerHTML = Bistro.items.map(i => {
+                    const adminControls = State.user && State.user.role === 'admin' ? `<div class="ml-2 flex gap-2"><button onclick="Admin.openMenuModal({ id: '${i.id}', name: \`${i.name}\`, price: ${i.price}, icon: '${i.icon}' })" class="text-xs px-2 py-1 rounded bg-slate-800">Edit</button><button onclick="Admin.promptRemoveMenuItem('${i.id}')" class="text-xs px-2 py-1 rounded bg-danger">Delete</button></div>` : '';
+                    const addBtn = State.user && State.user.role !== 'guest' ? `<button onclick="Bistro.add('${i.id}')" class="w-8 h-8 rounded bg-slate-800 text-lounge hover:bg-lounge hover:text-white flex items-center justify-center transition-colors"><i class="ph ph-plus"></i></button>` : '';
+                    return `<div class="bg-bg-card p-4 rounded-xl border border-slate-700 flex items-center gap-4 group hover:border-lounge transition-colors"><div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center text-lounge text-xl"><i class="ph ${i.icon}"></i></div><div class="flex-1"><h4 class="font-bold text-white">${i.name}</h4><p class="text-sm font-bold text-cyber">₱${Number(i.price).toFixed(2)}</p></div><div class="flex items-center">${addBtn}${adminControls}</div></div>`;
+                }).join('');
+                // admin add button
+                if(State.user && State.user.role === 'admin'){
+                    const container = document.createElement('div'); container.className = 'mt-4'; container.innerHTML = `<button onclick="Admin.openMenuModal(null)" class="px-4 py-2 rounded bg-gold text-slate-900 font-bold">Add New Item</button>`;
+                    document.getElementById('grid-menu').appendChild(container);
+                }
+            },
+            cart() {
+                let sub = State.cart.reduce((a,b) => a+b.price,0);
+                let disc = State.config.happyHour ? sub*0.2 : 0;
+                document.getElementById('cart-items').innerHTML = State.cart.length ? State.cart.map((i,idx) => `<div class="flex justify-between items-center mb-2"><span class="text-slate-300">${i.name}</span><div class="flex gap-3"><span class="text-slate-500">₱${i.price.toFixed(2)}</span><button onclick="Bistro.remove(${idx})" class="text-danger hover:text-white"><i class="ph ph-x"></i></button></div></div>`).join('') : '<p class="text-slate-600 text-center py-8 italic">Your cart is empty</p>';
+                document.getElementById('cart-subtotal').innerText = `₱${sub.toFixed(2)}`;
+                document.getElementById('cart-discount').innerText = `-₱${disc.toFixed(2)}`;
+                document.getElementById('cart-total').innerText = `₱${(sub-disc).toFixed(2)}`;
+                document.getElementById('cart-discount-row').classList.toggle('hidden', !State.config.happyHour);
+            },
+            history(bks) {
+                document.getElementById('table-bookings').innerHTML = bks.slice().reverse().map(b => `<tr class="hover:bg-slate-800/50"><td class="px-6 py-3 font-mono text-slate-500">#${b._id}</td><td class="px-6 py-3 font-bold text-white">${b.user}</td><td class="px-6 py-3 text-slate-300">${b.resourceName}</td><td class="px-6 py-3 text-slate-500">${b.duration}h</td><td class="px-6 py-3 text-right font-mono text-success">₱${b.total.toFixed(2)}</td><td class="px-6 py-3 text-right">${State.user.role === 'admin' ? '<button class="text-danger hover:text-white"><i class="ph ph-trash"></i></button>' : ''}</td></tr>`).join('');
+            }
+        };
+        const Clock = { start() { setInterval(() => { document.getElementById('current-time').innerText = 'SYSTEM TIME: ' + new Date().toLocaleTimeString(); }, 1000); } };
+        
+        // INIT
+        DB.init();
+    </script>
+</body>
+</html>
