@@ -1,0 +1,180 @@
+[{
+  "_id": {
+    "$oid": "692f3801aa8333bb96c78139"
+  },
+  "resourceId": "pc_1",
+  "resourceName": "Station 1",
+  "user": "Migs",
+  "duration": 2,
+  "start": {
+    "$date": "2025-12-02T19:03:29.968Z"
+  },
+  "end": {
+    "$date": "2025-12-02T21:03:29.968Z"
+  },
+  "total": 40,
+  "timestamp": {
+    "$date": "2025-12-02T19:03:29.970Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692f3808aa8333bb96c7813d"
+  },
+  "resourceId": "pc_2",
+  "resourceName": "Station 2",
+  "user": "Migs",
+  "duration": 3,
+  "start": {
+    "$date": "2025-12-02T19:03:36.117Z"
+  },
+  "end": {
+    "$date": "2025-12-02T22:03:36.117Z"
+  },
+  "total": 60,
+  "timestamp": {
+    "$date": "2025-12-02T19:03:36.118Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692f380baa8333bb96c78141"
+  },
+  "resourceId": "pc_6",
+  "resourceName": "Station 6",
+  "user": "Migs",
+  "duration": 3,
+  "start": {
+    "$date": "2025-12-02T19:03:39.866Z"
+  },
+  "end": {
+    "$date": "2025-12-02T22:03:39.866Z"
+  },
+  "total": 60,
+  "timestamp": {
+    "$date": "2025-12-02T19:03:39.866Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692f3813aa8333bb96c78145"
+  },
+  "resourceId": "rm_1",
+  "resourceName": "Lounge A",
+  "user": "Migs",
+  "duration": 3,
+  "start": {
+    "$date": "2025-12-02T19:03:47.493Z"
+  },
+  "end": {
+    "$date": "2025-12-02T22:03:47.493Z"
+  },
+  "total": 360,
+  "timestamp": {
+    "$date": "2025-12-02T19:03:47.493Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692f4022e31cc6913221de54"
+  },
+  "resourceId": "pc_4",
+  "resourceName": "Station 4",
+  "user": "Migs",
+  "duration": 2,
+  "start": {
+    "$date": "2025-12-02T19:38:10.141Z"
+  },
+  "end": {
+    "$date": "2025-12-02T21:38:10.141Z"
+  },
+  "total": 50,
+  "timestamp": {
+    "$date": "2025-12-02T19:38:10.143Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692f4026e31cc6913221de58"
+  },
+  "resourceId": "pc_3",
+  "resourceName": "Station 3",
+  "user": "Migs",
+  "duration": 3,
+  "start": {
+    "$date": "2025-12-02T19:38:14.983Z"
+  },
+  "end": {
+    "$date": "2025-12-02T22:38:14.983Z"
+  },
+  "total": 75,
+  "timestamp": {
+    "$date": "2025-12-02T19:38:14.983Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692f402ce31cc6913221de5c"
+  },
+  "resourceId": "rm_4",
+  "resourceName": "Lounge D",
+  "user": "Migs",
+  "duration": 3,
+  "start": {
+    "$date": "2025-12-02T19:38:20.046Z"
+  },
+  "end": {
+    "$date": "2025-12-02T22:38:20.046Z"
+  },
+  "total": 450,
+  "timestamp": {
+    "$date": "2025-12-02T19:38:20.046Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6938da7efe6eeff29cf15b11"
+  },
+  "resourceId": "pc_7",
+  "resourceName": "Station 7",
+  "user": "Lei",
+  "duration": 3,
+  "start": {
+    "$date": "2025-12-10T02:27:10.972Z"
+  },
+  "end": {
+    "$date": "2025-12-10T05:27:10.972Z"
+  },
+  "total": 75,
+  "timestamp": {
+    "$date": "2025-12-10T02:27:10.974Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6938da84fe6eeff29cf15b15"
+  },
+  "resourceId": "rm_3",
+  "resourceName": "Lounge C",
+  "user": "Lei",
+  "duration": 1,
+  "start": {
+    "$date": "2025-12-10T02:27:16.791Z"
+  },
+  "end": {
+    "$date": "2025-12-10T03:27:16.791Z"
+  },
+  "total": 150,
+  "timestamp": {
+    "$date": "2025-12-10T02:27:16.792Z"
+  },
+  "__v": 0
+}]

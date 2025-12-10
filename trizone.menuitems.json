@@ -1,0 +1,72 @@
+[{
+  "_id": {
+    "$oid": "692f36fe922c3cf1e9842812"
+  },
+  "name": "Neon Burger",
+  "price": 120,
+  "icon": "ph-hamburger",
+  "createdAt": {
+    "$date": "2025-12-02T18:59:10.385Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692f36fe922c3cf1e9842814"
+  },
+  "name": "Power Fries",
+  "price": 80,
+  "icon": "ph-pizza",
+  "createdAt": {
+    "$date": "2025-12-02T18:59:10.387Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692f36fe922c3cf1e9842815"
+  },
+  "name": "Energy Shot",
+  "price": 60,
+  "icon": "ph-lightning",
+  "createdAt": {
+    "$date": "2025-12-02T18:59:10.388Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692f36fe922c3cf1e9842813"
+  },
+  "name": "Cyber Soda",
+  "price": 45,
+  "icon": "ph-coffee",
+  "createdAt": {
+    "$date": "2025-12-02T18:59:10.387Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692f4059e31cc6913221de65"
+  },
+  "name": "Lei Maganda",
+  "price": 143,
+  "icon": "ph-cookie",
+  "createdAt": {
+    "$date": "2025-12-02T19:39:05.472Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6938e1e25b50b43959ead764"
+  },
+  "name": "Hotdog",
+  "price": 200,
+  "icon": "ph-hamburger",
+  "createdAt": {
+    "$date": "2025-12-10T02:58:42.266Z"
+  },
+  "__v": 0
+}]

@@ -1,0 +1,176 @@
+[{
+  "_id": {
+    "$oid": "692f3821aa8333bb96c78148"
+  },
+  "user": "Migs",
+  "items": [
+    {
+      "name": "Neon Burger",
+      "price": 120,
+      "qty": 1,
+      "_id": {
+        "$oid": "692f3821aa8333bb96c78149"
+      }
+    },
+    {
+      "name": "Power Fries",
+      "price": 80,
+      "qty": 1,
+      "_id": {
+        "$oid": "692f3821aa8333bb96c7814a"
+      }
+    },
+    {
+      "name": "Energy Shot",
+      "price": 60,
+      "qty": 1,
+      "_id": {
+        "$oid": "692f3821aa8333bb96c7814b"
+      }
+    },
+    {
+      "name": "Cyber Soda",
+      "price": 45,
+      "qty": 1,
+      "_id": {
+        "$oid": "692f3821aa8333bb96c7814c"
+      }
+    }
+  ],
+  "total": 244,
+  "deliveryType": "delivery",
+  "deliveryLocation": "pc_1",
+  "status": "pending",
+  "timestamp": {
+    "$date": "2025-12-02T19:04:01.953Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692f3847aa8333bb96c7814e"
+  },
+  "user": "Lei",
+  "items": [
+    {
+      "name": "Energy Shot",
+      "price": 60,
+      "qty": 1,
+      "_id": {
+        "$oid": "692f3847aa8333bb96c7814f"
+      }
+    }
+  ],
+  "total": 60,
+  "deliveryType": "pickup",
+  "deliveryLocation": "",
+  "status": "pending",
+  "timestamp": {
+    "$date": "2025-12-02T19:04:39.649Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692f4034e31cc6913221de5f"
+  },
+  "user": "Migs",
+  "items": [
+    {
+      "name": "Neon Burger",
+      "price": 120,
+      "qty": 1,
+      "_id": {
+        "$oid": "692f4034e31cc6913221de60"
+      }
+    }
+  ],
+  "total": 120,
+  "deliveryType": "delivery",
+  "deliveryLocation": "",
+  "status": "pending",
+  "timestamp": {
+    "$date": "2025-12-02T19:38:28.065Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6938da8dfe6eeff29cf15b18"
+  },
+  "user": "Lei",
+  "items": [
+    {
+      "name": "Lei Maganda",
+      "price": 143,
+      "qty": 1,
+      "_id": {
+        "$oid": "6938da8dfe6eeff29cf15b19"
+      }
+    }
+  ],
+  "total": 143,
+  "deliveryType": "delivery",
+  "deliveryLocation": "",
+  "status": "pending",
+  "timestamp": {
+    "$date": "2025-12-10T02:27:25.780Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6938dd6ffe6eeff29cf15b30"
+  },
+  "user": "Miko",
+  "items": [
+    {
+      "name": "Cyber Soda",
+      "price": 45,
+      "qty": 1,
+      "_id": {
+        "$oid": "6938dd6ffe6eeff29cf15b31"
+      }
+    }
+  ],
+  "total": 36,
+  "deliveryType": "delivery",
+  "deliveryLocation": "",
+  "status": "pending",
+  "timestamp": {
+    "$date": "2025-12-10T02:39:43.998Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6938e0cf0e1abcbb2615ca70"
+  },
+  "user": "Miko",
+  "items": [
+    {
+      "name": "Lei Maganda",
+      "price": 143,
+      "qty": 1,
+      "_id": {
+        "$oid": "6938e0cf0e1abcbb2615ca71"
+      }
+    },
+    {
+      "name": "Cyber Soda",
+      "price": 45,
+      "qty": 1,
+      "_id": {
+        "$oid": "6938e0cf0e1abcbb2615ca72"
+      }
+    }
+  ],
+  "total": 188,
+  "deliveryType": "delivery",
+  "deliveryLocation": "",
+  "status": "pending",
+  "timestamp": {
+    "$date": "2025-12-10T02:54:07.162Z"
+  },
+  "__v": 0
+}]

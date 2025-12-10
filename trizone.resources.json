@@ -1,0 +1,98 @@
+[{
+  "_id": "pc_1",
+  "name": "Station 1",
+  "type": "cyber",
+  "status": "maintenance",
+  "__v": 0
+},
+{
+  "_id": "pc_4",
+  "name": "Station 4",
+  "type": "cyber",
+  "status": "maintenance",
+  "__v": 0
+},
+{
+  "_id": "pc_3",
+  "name": "Station 3",
+  "type": "cyber",
+  "status": "occupied",
+  "__v": 0
+},
+{
+  "_id": "pc_2",
+  "name": "Station 2",
+  "type": "cyber",
+  "status": "occupied",
+  "__v": 0
+},
+{
+  "_id": "pc_7",
+  "name": "Station 7",
+  "type": "cyber",
+  "status": "occupied",
+  "__v": 0
+},
+{
+  "_id": "pc_10",
+  "name": "Station 10",
+  "type": "cyber",
+  "status": "available",
+  "__v": 0
+},
+{
+  "_id": "pc_9",
+  "name": "Station 9",
+  "type": "cyber",
+  "status": "available",
+  "__v": 0
+},
+{
+  "_id": "pc_8",
+  "name": "Station 8",
+  "type": "cyber",
+  "status": "available",
+  "__v": 0
+},
+{
+  "_id": "rm_1",
+  "name": "Lounge A",
+  "type": "lounge",
+  "status": "maintenance",
+  "__v": 0
+},
+{
+  "_id": "rm_4",
+  "name": "Lounge D",
+  "type": "lounge",
+  "status": "occupied",
+  "__v": 0
+},
+{
+  "_id": "rm_2",
+  "name": "Lounge B",
+  "type": "lounge",
+  "status": "available",
+  "__v": 0
+},
+{
+  "_id": "rm_3",
+  "name": "Lounge C",
+  "type": "lounge",
+  "status": "damaged",
+  "__v": 0
+},
+{
+  "_id": "pc_5",
+  "name": "Station 5",
+  "type": "cyber",
+  "status": "available",
+  "__v": 0
+},
+{
+  "_id": "pc_6",
+  "name": "Station 6",
+  "type": "cyber",
+  "status": "occupied",
+  "__v": 0
+}]
