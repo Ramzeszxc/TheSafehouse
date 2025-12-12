@@ -29,9 +29,7 @@ function requireAdmin(req,res,next){
   next();
 }
 
-// ... (Seed function remains the same) ...
-
-// --- MENU ROUTES (Unchanged) ---
+// --- MENU ROUTES ---
 app.get('/api/menu', async (req,res) => { const items = await MenuItem.find().sort({ createdAt: 1 }); res.json(items); });
 app.post('/api/menu', requireAdmin, async (req,res) => { const item = await MenuItem.create(req.body); res.status(201).json(item); });
 app.put('/api/menu/:id', requireAdmin, async (req, res) => { await MenuItem.findByIdAndUpdate(req.params.id, req.body); res.json({ok:true}); });
@@ -61,7 +59,6 @@ app.post('/api/admin/set-status', requireAdmin, async (req,res) => {
 });
 
 // --- COMBINED ACTIVITY (Bookings + Orders) ---
-// This endpoint simplifies the frontend "Recent Activity" logic
 app.get('/api/activity', async (req,res) => {
     try {
         const bookings = await Booking.find().lean();
@@ -83,7 +80,7 @@ app.get('/api/activity', async (req,res) => {
             details: o.deliveryType
         }));
 
-        // Merge and sort by newest first
+        // Merge
         const activity = [...normalizedBookings, ...normalizedOrders].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
         res.json(activity);
     } catch(e) {
